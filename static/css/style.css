@@ -184,9 +184,49 @@ main {
 
 /* Hero Section */
 .ks-hero {
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(135deg, #EAF5EC 0%, #F3FCEF 60%, #FEF8EC 100%);
     border-bottom: 1px solid var(--ks-border);
     padding: 3.5rem 0;
+}
+
+.ks-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('../images/hero-bg.jpg') center/cover no-repeat;
+    opacity: 0.16;
+    pointer-events: none;
+}
+
+.ks-hero > .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Auth Pages Subtle Background */
+.ks-auth-section {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #EAF5EC 0%, #FAFCF9 65%, #FEF8EC 100%);
+    min-height: calc(100vh - 220px);
+    display: flex;
+    align-items: center;
+}
+
+.ks-auth-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('../images/auth-bg.jpg') center/cover no-repeat;
+    opacity: 0.18;
+    pointer-events: none;
+}
+
+.ks-auth-section > .container {
+    position: relative;
+    z-index: 1;
 }
 
 .ks-hero-image-card {
