@@ -1,0 +1,334 @@
+:root {
+    --ks-primary: #228B45;
+    --ks-primary-dark: #176B36;
+    --ks-primary-light: #EAF5EC;
+    --ks-bg: #FAFCF9;
+    --ks-surface: #FFFFFF;
+    --ks-text: #202820;
+    --ks-text-muted: #5A685D;
+    --ks-border: #E2ECE3;
+    --ks-accent: #F4C95D;
+    --ks-accent-soft: #FEF8EC;
+    --ks-danger: #D32F2F;
+    --ks-danger-soft: #FDF2F2;
+    --ks-warning: #E08C1D;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--ks-bg);
+    color: var(--ks-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Navbar */
+.ks-navbar {
+    background-color: var(--ks-surface);
+    border-bottom: 1px solid var(--ks-border);
+    padding: 0.65rem 0;
+}
+
+.ks-brand-logo {
+    height: 44px;
+    max-height: 44px;
+    width: auto;
+    object-fit: contain;
+}
+
+.ks-nav-link {
+    color: var(--ks-text);
+    font-weight: 500;
+    font-size: 0.94rem;
+    padding: 0.45rem 0.85rem !important;
+    border-radius: 0.5rem;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ks-nav-link:hover,
+.ks-nav-link.active {
+    color: var(--ks-primary);
+    background-color: var(--ks-primary-light);
+}
+
+/* Buttons */
+.btn-ks-primary {
+    background-color: var(--ks-primary);
+    border-color: var(--ks-primary);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.55rem 1.2rem;
+}
+
+.btn-ks-primary:hover,
+.btn-ks-primary:focus {
+    background-color: var(--ks-primary-dark);
+    border-color: var(--ks-primary-dark);
+    color: #FFFFFF;
+}
+
+.btn-ks-secondary {
+    background-color: var(--ks-primary-light);
+    border: 1px solid var(--ks-border);
+    color: var(--ks-primary);
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.55rem 1.2rem;
+}
+
+.btn-ks-secondary:hover {
+    background-color: #DCEDE0;
+    color: var(--ks-primary-dark);
+}
+
+.btn-ks-outline {
+    background-color: transparent;
+    border: 1.5px solid var(--ks-primary);
+    color: var(--ks-primary);
+    font-weight: 600;
+    border-radius: 0.5rem;
+    padding: 0.55rem 1.2rem;
+}
+
+.btn-ks-outline:hover {
+    background-color: var(--ks-primary);
+    color: #FFFFFF;
+}
+
+/* Cards */
+.ks-card {
+    background-color: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(32, 40, 32, 0.04), 0 4px 12px rgba(34, 139, 69, 0.03);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ks-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(32, 40, 32, 0.08), 0 1px 4px rgba(34, 139, 69, 0.05);
+    border-color: #B7D6BC;
+}
+
+.ks-stat-card {
+    background-color: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    height: 100%;
+}
+
+.ks-stat-card-highlight {
+    background-color: var(--ks-accent-soft);
+    border-color: #F2DB99;
+}
+
+/* Product Image */
+.ks-product-img {
+    width: 100%;
+    height: 195px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background-color: var(--ks-primary-light);
+}
+
+.ks-product-detail-img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 1rem;
+    border: 1px solid var(--ks-border);
+    background-color: var(--ks-primary-light);
+}
+
+/* Badges & Pills */
+.ks-badge-green {
+    background-color: var(--ks-primary-light);
+    color: var(--ks-primary-dark);
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+}
+
+.ks-badge-yellow {
+    background-color: var(--ks-accent-soft);
+    color: #8A5A00;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+}
+
+.ks-badge-red {
+    background-color: var(--ks-danger-soft);
+    color: var(--ks-danger);
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+}
+
+/* Hero Section */
+.ks-hero {
+    background: linear-gradient(135deg, #EAF5EC 0%, #F3FCEF 60%, #FEF8EC 100%);
+    border-bottom: 1px solid var(--ks-border);
+    padding: 3.5rem 0;
+}
+
+.ks-hero-image-card {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--ks-border);
+    box-shadow: 0 12px 30px rgba(23, 107, 54, 0.12);
+    background-color: var(--ks-surface);
+}
+
+.ks-hero-photo {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+}
+
+/* Step Cards */
+.ks-step-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #CFE6D3;
+    line-height: 1;
+}
+
+/* Dashboard Sidebar */
+.ks-sidebar {
+    background-color: #F3F9F4;
+    border: 1px solid var(--ks-border);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.ks-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.6rem;
+    color: var(--ks-text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.94rem;
+    margin-bottom: 0.25rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ks-sidebar-link:hover {
+    background-color: var(--ks-primary-light);
+    color: var(--ks-primary-dark);
+}
+
+.ks-sidebar-link.active {
+    background-color: var(--ks-primary);
+    color: #FFFFFF;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    border-color: var(--ks-border);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.85rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--ks-primary);
+    box-shadow: 0 0 0 3px rgba(34, 139, 69, 0.15);
+}
+
+/* Tables */
+.ks-table thead th {
+    background-color: var(--ks-primary-light);
+    color: var(--ks-primary-dark);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--ks-border);
+    padding: 0.85rem 1rem;
+}
+
+.ks-table tbody td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--ks-border);
+}
+
+/* Footer */
+.ks-footer {
+    background-color: #F3F9F4;
+    border-top: 1px solid var(--ks-border);
+    padding: 3rem 0 1.5rem;
+    margin-top: 4rem;
+}
+
+/* Side Toast Popups */
+@keyframes ksSlideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.ks-toast {
+    background-color: var(--ks-surface);
+    color: var(--ks-text);
+    border-radius: 0.75rem;
+    border: 1px solid var(--ks-border) !important;
+    border-left: 4px solid var(--ks-primary) !important;
+    animation: ksSlideInRight 0.25s ease-out;
+}
+
+.ks-toast-warning {
+    border-left-color: var(--ks-warning) !important;
+}
+
+.ks-toast-error {
+    border-left-color: var(--ks-danger) !important;
+}
+
+/* Reactive Micro-Interactions */
+.btn-ks-primary,
+.btn-ks-secondary,
+.btn-ks-outline {
+    transition: transform 0.12s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-ks-primary:active,
+.btn-ks-secondary:active,
+.btn-ks-outline:active {
+    transform: scale(0.97);
+}
+
+.ks-stat-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ks-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(32, 40, 32, 0.06);
+}

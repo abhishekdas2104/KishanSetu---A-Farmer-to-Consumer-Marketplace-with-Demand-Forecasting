@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Marketplace – KisanSetu{% endblock %}
+
+{% block content %}
+<section class="py-4" style="background: var(--ks-primary-light); border-bottom: 1px solid var(--ks-border);">
+    <div class="container">
+        <span class="ks-badge-green mb-2 d-inline-block">Direct Harvest Marketplace</span>
+        <h1 class="fw-bold mb-1">Fresh Farm Marketplace</h1>
+        <p class="text-muted mb-4">Browse fresh agricultural produce directly from farmers with transparent prices.</p>
+
+        <!-- Search & Sort Form -->
+        <form method="get" action="{% url 'marketplace' %}" class="row g-2 align-items-center bg-white p-3 rounded-3 border" style="border-color: var(--ks-border) !important;">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" value="{{ search_query }}" class="form-control border-start-0"
+                           placeholder="Search vegetables, fruits, grains, pulses...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="category" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-ks-primary">Apply Filter</button>
+            </div>
+        </form>
+
+        <!-- Category Quick Chips -->
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <a href="{% url 'marketplace' %}{% if search_query %}?q={{ search_query }}{% endif %}"
+               class="btn btn-sm rounded-pill {% if not selected_category %}btn-ks-primary{% else %}btn-light border{% endif %}">
+                All Products
+            </a>
+            {% for cat in categories %}
+                <a href="{% url 'marketplace' %}?category={{ cat }}{% if search_query %}&q={{ search_query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}"
+                   class="btn btn-sm rounded-pill {% if selected_category == cat %}btn-ks-primary{% else %}btn-light border{% endif %}">
+                    {{ cat }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="mb-0 text-muted small">
+                Showing <strong>{{ total_count }}</strong> available product{{ total_count|pluralize }}
+                {% if search_query %} for "<strong>{{ search_query }}</strong>"{% endif %}
+            </p>
+            {% if search_query or selected_category or sort_by != 'newest' %}
+                <a href="{% url 'marketplace' %}" class="small text-decoration-none text-success fw-semibold">Clear Filters</a>
+            {% endif %}
+        </div>
+
+        {% if products %}
+            <div class="row g-4">
+                {% for product in products %}
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="ks-card ks-card-hover h-100 d-flex flex-column">
+                            <div class="position-relative">
+                                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/default-product.svg' %}{% endif %}"
+                                     alt="{{ product.name }}"
+                                     class="ks-product-img">
+                                <span class="ks-badge-green position-absolute top-0 start-0 m-2">{{ product.category }}</span>
+                                {% if product.savings_percent > 0 %}
+                                    <span class="ks-badge-yellow position-absolute top-0 end-0 m-2">Save {{ product.savings_percent }}%</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+                                <div class="small text-muted mb-1">
+                                    <i class="bi bi-person-check text-success me-1"></i>
+                                    {{ product.farmer.profile.full_name|default:product.farmer.username }}
+                                </div>
+                                <div class="small text-muted mb-3 tabular-nums">
+                                    Available: <strong>{{ product.available_quantity }} kg</strong>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-baseline gap-2 mb-3">
+                                        <span class="fs-5 fw-bold tabular-nums" style="color: var(--ks-primary);">₹{{ product.price }}</span>
+                                        <span class="small text-muted">/ kg</span>
+                                        {% if product.reference_market_price %}
+                                            <span class="small text-muted text-decoration-line-through ms-auto">₹{{ product.reference_market_price }}/kg</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-ks-secondary btn-sm flex-grow-1">
+                                            View Details
+                                        </a>
+                                        <form method="post" action="{% url 'add_to_cart' product.pk %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-ks-primary btn-sm" title="Add to Cart">
+                                                <i class="bi bi-cart-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <nav class="mt-4" aria-label="Marketplace pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link text-success" href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&category={{ selected_category }}&sort={{ sort_by }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link {% if page_obj.number == num %}bg-success border-success text-white{% else %}text-success{% endif %}"
+                                   href="?page={{ num }}&q={{ search_query }}&category={{ selected_category }}&sort={{ sort_by }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link text-success" href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&category={{ selected_category }}&sort={{ sort_by }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="ks-card p-5 text-center">
+                <i class="bi bi-search fs-1 text-muted d-block mb-2"></i>
+                <h5 class="fw-bold">No matching products found</h5>
+                <p class="text-muted mb-3">Try adjusting your search keywords or clearing category filters.</p>
+                <a href="{% url 'marketplace' %}" class="btn btn-ks-primary btn-sm">Reset Filters</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} – KisanSetu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-success text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'marketplace' %}" class="text-success text-decoration-none">Marketplace</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="ks-card p-4 mb-5">
+        <div class="row g-4 align-items-start">
+            <div class="col-md-6">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/default-product.svg' %}{% endif %}"
+                     alt="{{ product.name }}"
+                     class="ks-product-detail-img">
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="ks-badge-green">{{ product.category }}</span>
+                    {% if product.available_quantity > 0 %}
+                        <span class="ks-badge-green"><i class="bi bi-check-circle me-1"></i>In Stock</span>
+                    {% else %}
+                        <span class="ks-badge-red">Out of Stock</span>
+                    {% endif %}
+                    {% if product.savings_percent > 0 %}
+                        <span class="ks-badge-yellow">Save {{ product.savings_percent }}% vs Market</span>
+                    {% endif %}
+                </div>
+
+                <h1 class="fw-bold mb-2">{{ product.name }}</h1>
+                <p class="text-muted mb-3">
+                    Sold directly by <strong>{{ product.farmer.profile.full_name|default:product.farmer.username }}</strong>
+                </p>
+
+                <div class="p-3 rounded-3 mb-3" style="background-color: var(--ks-primary-light);">
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="fs-2 fw-bold tabular-nums" style="color: var(--ks-primary);">₹{{ product.price }}</span>
+                        <span class="text-muted">per kg</span>
+                        {% if product.reference_market_price %}
+                            <span class="ms-3 text-muted small">
+                                Market Price: <span class="text-decoration-line-through">₹{{ product.reference_market_price }}/kg</span>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="small text-muted mt-1 tabular-nums">
+                        Available Stock: <strong>{{ product.available_quantity }} kg</strong>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold">Product Description</h6>
+                <p class="text-muted mb-4">{{ product.description|linebreaksbr }}</p>
+
+                {% if product.available_quantity > 0 %}
+                    <form method="post" action="{% url 'add_to_cart' product.pk %}" class="row g-2 align-items-end">
+                        {% csrf_token %}
+                        <div class="col-sm-4">
+                            <label for="quantity" class="form-label small fw-semibold">Quantity (kg)</label>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1"
+                                   max="{{ product.available_quantity }}" class="form-control tabular-nums" required>
+                        </div>
+                        <div class="col-sm-8 d-grid">
+                            <button type="submit" class="btn btn-ks-primary btn-lg">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart (<span id="liveSubtotal" class="tabular-nums">₹{{ product.price }}</span>)
+                            </button>
+                        </div>
+                    </form>
+                    <script>
+                        const qtyInput = document.getElementById('quantity');
+                        const subtotalEl = document.getElementById('liveSubtotal');
+                        const unitPrice = parseFloat("{{ product.price }}");
+                        if (qtyInput && subtotalEl && !isNaN(unitPrice)) {
+                            qtyInput.addEventListener('input', function () {
+                                const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
+                                subtotalEl.textContent = '₹' + (q * unitPrice).toFixed(2);
+                            });
+                        }
+                    </script>
+                    {% if not user.is_authenticated %}
+                        <p class="small text-muted mt-2 mb-0">
+                            <i class="bi bi-info-circle me-1"></i> You will be asked to log in as a Customer when adding items to cart.
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <button class="btn btn-secondary btn-lg w-100" disabled>Currently Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if related_products %}
+        <h3 class="fw-bold mb-3">Related {{ product.category }}</h3>
+        <div class="row g-4">
+            {% for rel in related_products %}
+                <div class="col-sm-6 col-lg-3">
+                    <div class="ks-card ks-card-hover h-100 d-flex flex-column">
+                        <img src="{% if rel.image %}{{ rel.image.url }}{% else %}{% static 'images/default-product.svg' %}{% endif %}"
+                             alt="{{ rel.name }}" class="ks-product-img">
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <h6 class="fw-bold mb-1">{{ rel.name }}</h6>
+                            <p class="small text-muted mb-2">{{ rel.farmer.profile.full_name|default:rel.farmer.username }}</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-success tabular-nums">₹{{ rel.price }}/kg</span>
+                                <a href="{% url 'product_detail' rel.pk %}" class="btn btn-ks-secondary btn-sm">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KisanSetu – Kisano Se Seedha, Aapke Ghar Tak{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="ks-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="ks-badge-green d-inline-flex align-items-center gap-1 mb-3">
+                    <i class="bi bi-leaf"></i> DIRECT KISAN-TO-GHAR AGRI-NETWORK
+                </span>
+                <h1 class="display-5 fw-bold mb-2" style="letter-spacing: -0.02em;">
+                    Kisano Se Seedha,<br>
+                    <span style="color: var(--ks-primary);">Aapke Ghar Tak.</span>
+                </h1>
+                <p class="fs-5 fw-semibold text-secondary mb-3">
+                    From Farmers, Directly to Your Home.
+                </p>
+                <p class="text-muted mb-4" style="max-width: 560px;">
+                    Discover fresh agricultural products directly from local farmers. Better opportunities for farmers, better prices for customers — without unnecessary middlemen.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{% url 'marketplace' %}" class="btn btn-ks-primary btn-lg">
+                        <i class="bi bi-shop me-2"></i>Explore Marketplace
+                    </a>
+                    <a href="{% url 'register' %}?role=FARMER" class="btn btn-ks-outline btn-lg bg-white">
+                        <i class="bi bi-person-plus me-2"></i>Join as a Farmer
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill fw-medium">
+                        <i class="bi bi-check-circle-fill text-success me-1"></i> Direct Farm Sourcing
+                    </span>
+                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill fw-medium">
+                        <i class="bi bi-check-circle-fill text-success me-1"></i> Zero Middlemen
+                    </span>
+                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill fw-medium">
+                        <i class="bi bi-graph-up-arrow text-success me-1"></i> Demand Forecasting
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="ks-hero-image-card">
+                    <img src="https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=900&q=80"
+                         alt="Fresh farm harvest directly from Indian farmers"
+                         class="ks-hero-photo">
+                    <div class="p-3 d-flex justify-content-between align-items-center bg-white">
+                        <div>
+                            <div class="fw-bold">Fresh Farm Harvests</div>
+                            <div class="small text-muted">Direct from local growers to your kitchen</div>
+                        </div>
+                        <span class="ks-badge-green">100% Direct</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Statistics (from actual database records) -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Registered Farmers</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1" style="color: var(--ks-primary);">{{ stats.total_farmers }}</div>
+                    <div class="small text-muted">Selling directly on KisanSetu</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Active Produce Lots</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1" style="color: var(--ks-primary);">{{ stats.total_products }}</div>
+                    <div class="small text-muted">Available in marketplace</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Registered Customers</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1" style="color: var(--ks-primary);">{{ stats.total_customers }}</div>
+                    <div class="small text-muted">Buying fresh farm produce</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="ks-stat-card ks-stat-card-highlight">
+                    <div class="small text-muted fw-semibold text-uppercase">Completed Orders</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1" style="color: #8A5A00;">{{ stats.fulfilled_orders }}</div>
+                    <div class="small text-muted">Delivered farm-to-home</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+            <div>
+                <div class="small fw-bold text-success text-uppercase">Today's Fresh Harvest</div>
+                <h2 class="fw-bold mb-0">Featured Agricultural Produce</h2>
+            </div>
+            <a href="{% url 'marketplace' %}" class="btn btn-ks-secondary btn-sm">
+                View All Products <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        {% if featured_products %}
+            <div class="row g-4">
+                {% for product in featured_products %}
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="ks-card ks-card-hover h-100 d-flex flex-column">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/default-product.svg' %}{% endif %}"
+                                 alt="{{ product.name }}"
+                                 class="ks-product-img">
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="ks-badge-green">{{ product.category }}</span>
+                                    <span class="small text-muted tabular-nums">{{ product.available_quantity }} kg left</span>
+                                </div>
+                                <h5 class="fw-bold mb-1">{{ product.name }}</h5>
+                                <p class="small text-muted mb-3">
+                                    <i class="bi bi-person-check text-success me-1"></i>
+                                    {{ product.farmer.profile.full_name|default:product.farmer.username }}
+                                </p>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-baseline gap-2 mb-3">
+                                        <span class="fs-5 fw-bold tabular-nums" style="color: var(--ks-primary);">₹{{ product.price }}</span>
+                                        <span class="small text-muted">/ kg</span>
+                                        {% if product.reference_market_price %}
+                                            <span class="small text-muted text-decoration-line-through ms-auto">₹{{ product.reference_market_price }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-ks-primary w-100 btn-sm">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="ks-card p-5 text-center">
+                <i class="bi bi-basket fs-1 text-success mb-2 d-block"></i>
+                <h5 class="fw-bold">No products listed yet</h5>
+                <p class="text-muted mb-3">Farmers can register and list their fresh produce directly on KisanSetu.</p>
+                <a href="{% url 'register' %}?role=FARMER" class="btn btn-ks-primary btn-sm">Join as a Farmer</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="py-4">
+    <div class="container">
+        <h3 class="fw-bold mb-3">Browse by Category</h3>
+        <div class="row g-3">
+            <div class="col-6 col-md-4 col-lg">
+                <a href="{% url 'marketplace' %}?category=Vegetables" class="ks-card ks-card-hover p-3 text-center d-block text-decoration-none text-dark">
+                    <i class="bi bi-carrot fs-3 text-success d-block mb-1"></i>
+                    <span class="fw-semibold">Vegetables</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg">
+                <a href="{% url 'marketplace' %}?category=Fruits" class="ks-card ks-card-hover p-3 text-center d-block text-decoration-none text-dark">
+                    <i class="bi bi-apple fs-3 text-success d-block mb-1"></i>
+                    <span class="fw-semibold">Fruits</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg">
+                <a href="{% url 'marketplace' %}?category=Grains" class="ks-card ks-card-hover p-3 text-center d-block text-decoration-none text-dark">
+                    <i class="bi bi-flower1 fs-3 text-success d-block mb-1"></i>
+                    <span class="fw-semibold">Grains</span>
+                </a>
+            </div>
+            <div class="col-6 col-md-4 col-lg">
+                <a href="{% url 'marketplace' %}?category=Pulses" class="ks-card ks-card-hover p-3 text-center d-block text-decoration-none text-dark">
+                    <i class="bi bi-circle-fill fs-3 text-success d-block mb-1"></i>
+                    <span class="fw-semibold">Pulses</span>
+                </a>
+            </div>
+            <div class="col-12 col-md-4 col-lg">
+                <a href="{% url 'marketplace' %}?category=Others" class="ks-card ks-card-hover p-3 text-center d-block text-decoration-none text-dark">
+                    <i class="bi bi-basket2 fs-3 text-success d-block mb-1"></i>
+                    <span class="fw-semibold">Others</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-white border-top border-bottom" style="border-color: var(--ks-border) !important;">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="small fw-bold text-success text-uppercase">Direct Agri Supply Chain</div>
+            <h2 class="fw-bold">How KisanSetu Works</h2>
+            <p class="text-muted mb-0">
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fs-6">
+                    Farmer &rarr; KisanSetu &rarr; Customer
+                </span>
+            </p>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-md-4">
+                <div class="ks-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="ks-badge-green"><i class="bi bi-box-seam me-1"></i> List</span>
+                        <span class="ks-step-num">01</span>
+                    </div>
+                    <h5 class="fw-bold">Farmers List Products</h5>
+                    <p class="text-muted small mb-0">
+                        Farmers register and upload their fresh vegetables, fruits, grains, and pulses with fair prices and available stock.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ks-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="ks-badge-green"><i class="bi bi-cart-check me-1"></i> Order</span>
+                        <span class="ks-step-num">02</span>
+                    </div>
+                    <h5 class="fw-bold">Customers Browse &amp; Buy</h5>
+                    <p class="text-muted small mb-0">
+                        Customers search the public marketplace, compare prices, add fresh produce to cart, and place Cash on Delivery orders.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ks-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="ks-badge-green"><i class="bi bi-truck me-1"></i> Deliver</span>
+                        <span class="ks-step-num">03</span>
+                    </div>
+                    <h5 class="fw-bold">Direct Fulfillment &amp; Insights</h5>
+                    <p class="text-muted small mb-0">
+                        Farmers accept and fulfill orders directly while using 7-day demand forecasting to plan upcoming harvests.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="small fw-bold text-success text-uppercase">Dual Advantage Ecosystem</div>
+            <h2 class="fw-bold">Benefits for Farmers &amp; Customers</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100">
+                    <span class="ks-badge-green mb-3 d-inline-block">For Farmers</span>
+                    <h4 class="fw-bold mb-3">Better Earnings &amp; Smart Insights</h4>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0 text-muted">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Direct access to customers without middlemen</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Better control over product pricing</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Increased selling opportunities across local buyers</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Access to 7-day demand forecasting insights</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100">
+                    <span class="ks-badge-yellow mb-3 d-inline-block">For Customers</span>
+                    <h4 class="fw-bold mb-3">Fresh Produce &amp; Fair Prices</h4>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0 text-muted">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Fresh agricultural products straight from farms</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Direct connection with the farmer who grew your food</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Transparent prices with optional market comparison</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Convenient online ordering with Cash on Delivery</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sample Testimonials (Clearly labeled as Sample/Demo Content) -->
+<section class="py-4">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="ks-badge-yellow mb-2 d-inline-block">Sample / Demo Content</span>
+            <h3 class="fw-bold">Community Voices</h3>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100">
+                    <p class="fst-italic text-muted mb-3">
+                        "KisanSetu helps me reach local households directly without losing margin to multiple middlemen. The demand forecast also helps me plan how much to harvest each week."
+                    </p>
+                    <div class="fw-bold">Ramesh Patel <span class="badge bg-light text-muted border ms-1">Sample Farmer</span></div>
+                    <div class="small text-muted">Tomato &amp; Onion Grower</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100">
+                    <p class="fst-italic text-muted mb-3">
+                        "Buying directly from farmers gives my family fresher vegetables at transparent prices, and I know the farmer receives a fair share."
+                    </p>
+                    <div class="fw-bold">Priya Sharma <span class="badge bg-light text-muted border ms-1">Sample Customer</span></div>
+                    <div class="small text-muted">Regular Household Buyer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Farmer CTA Banner -->
+<section class="py-4">
+    <div class="container">
+        <div class="p-4 p-md-5 rounded-4 text-white d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3"
+             style="background-color: var(--ks-primary-dark);">
+            <div>
+                <h3 class="fw-bold mb-1">Are you a farmer? Start selling directly today.</h3>
+                <p class="mb-0 opacity-75">Create your free KisanSetu farmer account and list your harvest in minutes.</p>
+            </div>
+            <a href="{% url 'register' %}?role=FARMER" class="btn btn-light fw-bold px-4 py-2 text-success flex-shrink-0">
+                Register as Farmer
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,70 @@
+<div class="d-lg-none mb-2">
+    <button class="btn btn-ks-secondary w-100 d-flex justify-content-between align-items-center" type="button"
+            data-bs-toggle="collapse" data-bs-target="#dashboardSidebarMenu" aria-expanded="false" aria-controls="dashboardSidebarMenu">
+        <span><i class="bi bi-list me-2"></i>Dashboard Menu</span>
+        <i class="bi bi-chevron-down"></i>
+    </button>
+</div>
+
+<div class="collapse d-lg-block" id="dashboardSidebarMenu">
+<div class="ks-sidebar">
+    <div class="mb-3 pb-2 border-bottom" style="border-color: var(--ks-border) !important;">
+        <div class="small text-uppercase fw-bold text-success">
+            {% if user.profile.role == 'ADMIN' or user.is_superuser %}Admin Control Center{% elif user.profile.role == 'FARMER' %}Farmer Hub{% else %}Customer Account{% endif %}
+        </div>
+        <div class="fw-semibold">{{ user.profile.full_name|default:user.username }}</div>
+    </div>
+
+    {% if user.profile.role == 'ADMIN' or user.is_superuser %}
+        <a href="{% url 'admin_dashboard' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+            <i class="bi bi-speedometer2"></i> Admin Dashboard
+        </a>
+        <a href="/admin/" class="ks-sidebar-link">
+            <i class="bi bi-shield-lock"></i> Django Admin Panel
+        </a>
+        <a href="{% url 'marketplace' %}" class="ks-sidebar-link">
+            <i class="bi bi-shop"></i> View Marketplace
+        </a>
+    {% elif user.profile.role == 'FARMER' %}
+        <a href="{% url 'farmer_dashboard' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'farmer_dashboard' %}active{% endif %}">
+            <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+        <a href="{% url 'farmer_products' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'farmer_products' %}active{% endif %}">
+            <i class="bi bi-box-seam"></i> My Products
+        </a>
+        <a href="{% url 'add_product' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'add_product' %}active{% endif %}">
+            <i class="bi bi-plus-circle"></i> Add Product
+        </a>
+        <a href="{% url 'farmer_orders' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'farmer_orders' %}active{% endif %}">
+            <i class="bi bi-receipt"></i> Orders
+        </a>
+        <a href="{% url 'forecasting' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'forecasting' %}active{% endif %}">
+            <i class="bi bi-graph-up-arrow"></i> Demand Forecasting
+        </a>
+    {% else %}
+        <a href="{% url 'customer_dashboard' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+            <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+        <a href="{% url 'marketplace' %}" class="ks-sidebar-link">
+            <i class="bi bi-shop"></i> Marketplace
+        </a>
+        <a href="{% url 'cart' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'cart' %}active{% endif %}">
+            <i class="bi bi-cart3"></i> My Cart
+        </a>
+        <a href="{% url 'customer_orders' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'customer_orders' %}active{% endif %}">
+            <i class="bi bi-bag-check"></i> My Orders
+        </a>
+    {% endif %}
+
+    <a href="{% url 'profile' %}" class="ks-sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+        <i class="bi bi-person-circle"></i> Profile
+    </a>
+
+    <form method="post" action="{% url 'logout' %}" class="mt-2 pt-2 border-top" style="border-color: var(--ks-border) !important;">
+        {% csrf_token %}
+        <button type="submit" class="ks-sidebar-link w-100 border-0 bg-transparent text-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+    </form>
+</div>
+</div>

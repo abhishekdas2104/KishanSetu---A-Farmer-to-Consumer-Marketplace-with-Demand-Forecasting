@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#EAF5EC"/>
+  <circle cx="300" cy="180" r="76" fill="#FFFFFF" stroke="#228B45" stroke-width="4"/>
+  <path d="M300 225 C300 175, 340 140, 352 135 C348 165, 330 205, 300 225 Z" fill="#228B45"/>
+  <path d="M300 225 C300 185, 265 155, 248 152 C255 180, 272 208, 300 225 Z" fill="#176B36"/>
+  <text x="300" y="295" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#176B36" text-anchor="middle">Fresh Farm Produce</text>
+  <text x="300" y="325" font-family="Inter, Arial, sans-serif" font-size="14" fill="#5A685D" text-anchor="middle">KisanSetu Direct Marketplace</text>
+</svg>

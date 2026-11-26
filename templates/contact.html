@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us – KisanSetu{% endblock %}
+
+{% block content %}
+<section class="py-4" style="background: var(--ks-primary-light); border-bottom: 1px solid var(--ks-border);">
+    <div class="container">
+        <span class="ks-badge-green mb-2 d-inline-block">24&times;7 Kisan &amp; Customer Support</span>
+        <h1 class="fw-bold mb-1">Contact KisanSetu</h1>
+        <p class="text-muted mb-0">Have a suggestion, complaint, or question? Send us a message and our admin team will respond directly.</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-5">
+            <div class="ks-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Direct Support Channels</h5>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <span class="ks-badge-green p-2"><i class="bi bi-telephone fs-5"></i></span>
+                        <div>
+                            <div class="small text-muted fw-bold text-uppercase">Toll-Free Helpline</div>
+                            <div class="fw-semibold">+91 1800-KISAN-SETU</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <span class="ks-badge-green p-2"><i class="bi bi-envelope fs-5"></i></span>
+                        <div>
+                            <div class="small text-muted fw-bold text-uppercase">Support Email</div>
+                            <div class="fw-semibold">support@kisansetu.in</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <span class="ks-badge-green p-2"><i class="bi bi-geo-alt fs-5"></i></span>
+                        <div>
+                            <div class="small text-muted fw-bold text-uppercase">Headquarters</div>
+                            <div class="fw-semibold">KisanSetu AgriTech Hub, India</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ks-card p-4" style="background-color: var(--ks-accent-soft);">
+                <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-1 text-warning"></i> How We Handle Your Message</h6>
+                <ul class="small text-muted mb-0 d-flex flex-column gap-1">
+                    <li>Your message is delivered directly to our Admin Dashboard and support email.</li>
+                    <li>Select a message type (Complaint, Suggestion, Order Issue, etc.) for faster routing.</li>
+                    <li>Optionally attach a screenshot or produce photo if reporting an issue.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="ks-card p-4 p-md-5">
+                <h4 class="fw-bold mb-1">Send Us a Message</h4>
+                <p class="small text-muted mb-4">Fill out the form below and we will reply to your email address.</p>
+
+                <form method="post" action="{% url 'contact' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">{{ form.message_type.label }}</label>
+                            {{ form.message_type }}
+                            {% if form.message_type.errors %}<div class="text-danger small mt-1">{{ form.message_type.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">{{ form.message.label }}</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}<div class="text-danger small mt-1">{{ form.message.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">{{ form.attachment.label }}</label>
+                            {{ form.attachment }}
+                            {% if form.attachment.errors %}<div class="text-danger small mt-1">{{ form.attachment.errors|striptags }}</div>{% endif %}
+                            <img id="contactAttachmentPreview" src="#" alt="Attachment Preview" class="mt-2 rounded-3 border d-none" style="max-height: 150px; object-fit: cover;">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-ks-primary btn-lg w-100 mt-4">
+                        <i class="bi bi-send me-2"></i>Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const attachmentInput = document.getElementById('id_attachment');
+    const attachmentPreview = document.getElementById('contactAttachmentPreview');
+    if (attachmentInput && attachmentPreview) {
+        attachmentInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                attachmentPreview.src = URL.createObjectURL(file);
+                attachmentPreview.classList.remove('d-none');
+            }
+        });
+    }
+</script>
+{% endblock %}

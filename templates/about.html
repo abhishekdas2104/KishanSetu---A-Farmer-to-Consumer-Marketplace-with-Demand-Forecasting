@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us – KisanSetu{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="ks-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="ks-badge-green mb-2 d-inline-block">About KisanSetu</span>
+                <h1 class="display-5 fw-bold mb-2">Kisano Se Seedha, <span style="color: var(--ks-primary);">Aapke Ghar Tak.</span></h1>
+                <p class="fs-5 text-secondary fw-semibold mb-3">From Farmers, Directly to Your Home.</p>
+                <p class="text-muted mb-4" style="max-width: 680px;">
+                    KisanSetu is an agricultural technology platform built to bridge the gap between hardworking local farmers and everyday households. By removing unnecessary intermediaries, we help farmers earn fairer returns while delivering fresher produce at transparent prices.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'marketplace' %}" class="btn btn-ks-primary">Explore Marketplace</a>
+                    <a href="{% url 'register' %}?role=FARMER" class="btn btn-ks-outline bg-white">Join as a Farmer</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <div class="ks-card p-4">
+                    <img src="{% static 'images/logo.png' %}" alt="KisanSetu" class="img-fluid mb-3" style="max-height: 110px;">
+                    <div class="small text-muted">Direct Farmer-to-Consumer Marketplace with 7-Day Demand Forecasting</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Live Platform Data -->
+<section class="py-4">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Active Farmers</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ stats.total_farmers }}</div>
+                    <div class="small text-muted">Verified growers on platform</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Happy Customers</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ stats.total_customers }}</div>
+                    <div class="small text-muted">Registered household buyers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="ks-stat-card">
+                    <div class="small text-muted fw-semibold text-uppercase">Fresh Produce Lots</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ stats.total_products }}</div>
+                    <div class="small text-muted">Vegetables, fruits, grains &amp; pulses</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="ks-stat-card ks-stat-card-highlight">
+                    <div class="small text-muted fw-semibold text-uppercase">Completed Orders</div>
+                    <div class="fs-2 fw-bold tabular-nums mt-1" style="color: #8A5A00;">{{ stats.fulfilled_orders }}</div>
+                    <div class="small text-muted">Direct farm-to-home deliveries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Problem vs Solution -->
+<section class="py-4">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="ks-badge-green mb-2 d-inline-block">Why KisanSetu Exists</span>
+            <h2 class="fw-bold">Fixing the Agricultural Supply Chain</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100" style="border-left: 4px solid var(--ks-danger) !important;">
+                    <span class="ks-badge-red mb-2 d-inline-block">The Traditional Problem</span>
+                    <h4 class="fw-bold mb-3">Multiple Intermediaries</h4>
+                    <p class="small text-muted mb-3">
+                        Farmer &rarr; Local Aggregator &rarr; Mandi Broker &rarr; Wholesaler &rarr; Retailer &rarr; Customer
+                    </p>
+                    <ul class="text-muted small d-flex flex-column gap-2 mb-0">
+                        <li>Farmers receive a smaller share of the final selling price.</li>
+                        <li>Customers pay inflated retail prices for produce that has been stored and handled for days.</li>
+                        <li>Growers lack visibility into upcoming customer demand, leading to overproduction or shortages.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="ks-card p-4 h-100" style="border-left: 4px solid var(--ks-primary) !important;">
+                    <span class="ks-badge-green mb-2 d-inline-block">The KisanSetu Solution</span>
+                    <h4 class="fw-bold mb-3">Direct Farm-to-Home Bridge</h4>
+                    <p class="small text-success fw-semibold mb-3">
+                        Farmer &rarr; KisanSetu &rarr; Customer
+                    </p>
+                    <ul class="text-muted small d-flex flex-column gap-2 mb-0">
+                        <li>Farmers list produce directly and set their own fair price per kg.</li>
+                        <li>Customers browse transparent prices with optional market price comparisons.</li>
+                        <li>Built-in 7-day moving average demand forecasting helps farmers plan inventory and harvests.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Pillars -->
+<section class="py-4">
+    <div class="container">
+        <h3 class="fw-bold mb-3 text-center">Core Platform Capabilities</h3>
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-3">
+                <div class="ks-card p-4 h-100">
+                    <i class="bi bi-cash-coin fs-2 text-success mb-2 d-block"></i>
+                    <h6 class="fw-bold">Transparent Pricing</h6>
+                    <p class="small text-muted mb-0">Compare direct farmer prices against optional reference market prices with zero hidden markups.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="ks-card p-4 h-100">
+                    <i class="bi bi-graph-up-arrow fs-2 text-success mb-2 d-block"></i>
+                    <h6 class="fw-bold">Demand Forecasting</h6>
+                    <p class="small text-muted mb-0">7-day moving average analytics computed from real non-rejected orders to estimate weekly demand.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="ks-card p-4 h-100">
+                    <i class="bi bi-truck fs-2 text-success mb-2 d-block"></i>
+                    <h6 class="fw-bold">Cash on Delivery</h6>
+                    <p class="small text-muted mb-0">Simple, accessible checkout with automatic stock tracking and single-farmer order fulfillment.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="ks-card p-4 h-100">
+                    <i class="bi bi-shield-check fs-2 text-success mb-2 d-block"></i>
+                    <h6 class="fw-bold">Role-Based Security</h6>
+                    <p class="small text-muted mb-0">Dedicated Farmer Hub, Customer Dashboard, and Admin Control Center with strict ownership checks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

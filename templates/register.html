@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Register – KisanSetu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="ks-card p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <span class="ks-badge-green mb-2 d-inline-block">Join KisanSetu</span>
+                    <h2 class="fw-bold mb-1">Create Your Account</h2>
+                    <p class="text-muted small mb-0">Register as a Farmer to sell produce or as a Customer to buy fresh</p>
+                </div>
+
+                <form method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger small">{{ form.non_field_errors|striptags }}</div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Full Name</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<div class="text-danger small mt-1">{{ form.full_name.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Username</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.errors %}<div class="text-danger small mt-1">{{ form.phone_number.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Account Type</label>
+                            {{ form.role }}
+                            {% if form.role.errors %}<div class="text-danger small mt-1">{{ form.role.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-12" id="adminSecretWrapper" style="display: none;">
+                            <label class="form-label fw-semibold text-success">
+                                <i class="bi bi-shield-lock me-1"></i>{{ form.admin_secret_code.label }}
+                            </label>
+                            <div class="input-group">
+                                {{ form.admin_secret_code }}
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="id_admin_secret_code" aria-label="Show or hide secret code">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Only authorized administrators have the secret admin code.</div>
+                            {% if form.admin_secret_code.errors %}<div class="text-danger small mt-1">{{ form.admin_secret_code.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Password</label>
+                            <div class="input-group">
+                                {{ form.password }}
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="id_password" aria-label="Show or hide password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Confirm Password</label>
+                            <div class="input-group">
+                                {{ form.confirm_password }}
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="id_confirm_password" aria-label="Show or hide confirm password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.confirm_password.errors %}<div class="text-danger small mt-1">{{ form.confirm_password.errors|striptags }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-ks-primary w-100 py-2 mt-4">Create Account</button>
+                </form>
+
+                <hr class="my-4">
+                <p class="text-center small text-muted mb-0">
+                    Already have an account? <a href="{% url 'login' %}" class="text-success fw-semibold text-decoration-none">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const roleSelect = document.getElementById('id_role');
+    const secretWrapper = document.getElementById('adminSecretWrapper');
+
+    function toggleAdminSecret() {
+        if (roleSelect && secretWrapper) {
+            secretWrapper.style.display = (roleSelect.value === 'ADMIN') ? 'block' : 'none';
+        }
+    }
+
+    if (roleSelect) {
+        roleSelect.addEventListener('change', toggleAdminSecret);
+        toggleAdminSecret();
+    }
+</script>
+{% endblock %}

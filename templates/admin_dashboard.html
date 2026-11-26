@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard – KisanSetu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            {% include 'includes/dashboard_sidebar.html' %}
+        </div>
+
+        <div class="col-lg-9">
+            <!-- Header -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <span class="ks-badge-green mb-1 d-inline-block">Administrator Control Center</span>
+                    <h2 class="fw-bold mb-0">Platform Overview</h2>
+                    <p class="text-muted small mb-0">Monitor all farmers, customers, products, and orders across KisanSetu.</p>
+                </div>
+                <a href="/admin/" class="btn btn-ks-primary btn-sm">
+                    <i class="bi bi-shield-lock me-1"></i> Open Django Admin
+                </a>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Farmers</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ stats.total_farmers }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Customers</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ stats.total_customers }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Products (Active)</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1">{{ stats.total_products }} <span class="fs-6 text-muted">({{ stats.active_products }})</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card ks-stat-card-highlight">
+                        <div class="small text-muted fw-semibold">Platform Revenue</div>
+                        <div class="fs-3 fw-bold tabular-nums mt-1" style="color: #8A5A00;">₹{{ stats.total_revenue }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Pills -->
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">Total Orders: <strong>{{ stats.total_orders }}</strong></span>
+                <span class="ks-badge-yellow">Pending: <strong>{{ stats.pending_orders }}</strong></span>
+                <span class="ks-badge-green">Completed: <strong>{{ stats.completed_orders }}</strong></span>
+                <span class="ks-badge-red">Low Stock Products: <strong>{{ stats.low_stock_products }}</strong></span>
+                <span class="ks-badge-yellow">Unreplied Messages: <strong>{{ stats.unreplied_messages }}</strong></span>
+            </div>
+
+            <!-- Tabs for Users, Products, Orders, Messages -->
+            <ul class="nav nav-pills mb-3 gap-2" id="adminTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active bg-success text-white" id="orders-tab" data-bs-toggle="pill" data-bs-target="#orders-pane" type="button" role="tab">
+                        All Orders ({{ orders|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link border text-dark bg-white" id="products-tab" data-bs-toggle="pill" data-bs-target="#products-pane" type="button" role="tab">
+                        All Products ({{ products|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link border text-dark bg-white" id="users-tab" data-bs-toggle="pill" data-bs-target="#users-pane" type="button" role="tab">
+                        All Users ({{ profiles|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link border text-dark bg-white" id="messages-tab" data-bs-toggle="pill" data-bs-target="#messages-pane" type="button" role="tab">
+                        Messages ({{ contact_messages|length }})
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- All Orders Tab -->
+                <div class="tab-pane fade show active" id="orders-pane" role="tabpanel">
+                    <div class="ks-card overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table ks-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Farmer</th>
+                                        <th>Total</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td class="fw-semibold tabular-nums">#{{ order.id }}</td>
+                                            <td>{{ order.customer.profile.full_name|default:order.customer.username }}</td>
+                                            <td>{{ order.farmer.profile.full_name|default:order.farmer.username }}</td>
+                                            <td class="fw-bold tabular-nums">₹{{ order.total_amount }}</td>
+                                            <td class="small text-muted">{{ order.order_date|date:"d M Y" }}</td>
+                                            <td>
+                                                {% if order.status == 'Pending' %}
+                                                    <span class="ks-badge-yellow">Pending</span>
+                                                {% elif order.status == 'Accepted' or order.status == 'Completed' %}
+                                                    <span class="ks-badge-green">{{ order.status }}</span>
+                                                {% else %}
+                                                    <span class="ks-badge-red">{{ order.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="{% url 'order_detail' order.pk %}" class="btn btn-sm btn-ks-secondary">View</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="7" class="text-center py-4 text-muted">No orders yet.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Products Tab -->
+                <div class="tab-pane fade" id="products-pane" role="tabpanel">
+                    <div class="ks-card overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table ks-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Farmer</th>
+                                        <th>Price</th>
+                                        <th>Stock</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/default-product.svg' %}{% endif %}"
+                                                         alt="{{ product.name }}" style="width: 42px; height: 42px; object-fit: cover; border-radius: 0.4rem;">
+                                                    <div>
+                                                        <div class="fw-semibold">{{ product.name }}</div>
+                                                        <div class="small text-muted">{{ product.category }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ product.farmer.profile.full_name|default:product.farmer.username }}</td>
+                                            <td class="tabular-nums">₹{{ product.price }}/kg</td>
+                                            <td class="tabular-nums">{{ product.available_quantity }} kg</td>
+                                            <td>
+                                                {% if product.is_active %}
+                                                    <span class="ks-badge-green">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary rounded-pill">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                <form method="post" action="{% url 'admin_toggle_product' product.pk %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-ks-secondary">
+                                                        {% if product.is_active %}Deactivate{% else %}Activate{% endif %}
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{% url 'admin_delete_product' product.pk %}" class="d-inline" onsubmit="return confirm('Delete this product?');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="6" class="text-center py-4 text-muted">No products found.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Users Tab -->
+                <div class="tab-pane fade" id="users-pane" role="tabpanel">
+                    <div class="ks-card overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table ks-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for p in profiles %}
+                                        <tr>
+                                            <td class="fw-semibold">{{ p.full_name }}</td>
+                                            <td>{{ p.user.username }}</td>
+                                            <td class="small">{{ p.user.email }}</td>
+                                            <td class="small tabular-nums">{{ p.phone_number }}</td>
+                                            <td><span class="ks-badge-green">{{ p.get_role_display }}</span></td>
+                                            <td>
+                                                {% if p.user.is_active %}
+                                                    <span class="ks-badge-green">Active</span>
+                                                {% else %}
+                                                    <span class="ks-badge-red">Inactive</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                {% if p.user != user %}
+                                                    <form method="post" action="{% url 'admin_toggle_user' p.user.pk %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-ks-secondary">
+                                                            {% if p.user.is_active %}Deactivate{% else %}Activate{% endif %}
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="small text-muted">Current Admin</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="7" class="text-center py-4 text-muted">No profiles found.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Tab -->
+                <div class="tab-pane fade" id="messages-pane" role="tabpanel">
+                    <div class="d-flex flex-column gap-3">
+                        {% for msg in contact_messages %}
+                            <div class="ks-card p-4">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                                    <div>
+                                        <span class="ks-badge-green me-2">{{ msg.message_type }}</span>
+                                        <strong class="fs-6">{{ msg.name }}</strong>
+                                        <span class="text-muted small">({{ msg.email }})</span>
+                                    </div>
+                                    <div class="small text-muted">{{ msg.created_at|date:"d M Y, H:i" }}</div>
+                                </div>
+
+                                <p class="mb-3">{{ msg.message|linebreaksbr }}</p>
+
+                                {% if msg.attachment %}
+                                    <div class="mb-3">
+                                        <div class="small text-muted fw-semibold mb-1">Attached Image:</div>
+                                        <a href="{{ msg.attachment.url }}" target="_blank">
+                                            <img src="{{ msg.attachment.url }}" alt="Attachment" class="rounded-3 border" style="max-height: 150px; object-fit: cover;">
+                                        </a>
+                                    </div>
+                                {% endif %}
+
+                                {% if msg.admin_reply %}
+                                    <div class="p-3 rounded-3 mb-2" style="background-color: var(--ks-primary-light);">
+                                        <div class="small fw-bold text-success mb-1">
+                                            <i class="bi bi-reply-fill me-1"></i>Admin Reply ({{ msg.replied_at|date:"d M Y, H:i" }}):
+                                        </div>
+                                        <div class="small">{{ msg.admin_reply|linebreaksbr }}</div>
+                                    </div>
+                                {% endif %}
+
+                                <form method="post" action="{% url 'admin_reply_message' msg.pk %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <input type="text" name="admin_reply" class="form-control form-control-sm"
+                                               placeholder="{% if msg.admin_reply %}Update reply to {{ msg.email }}...{% else %}Write a reply to {{ msg.email }}...{% endif %}" required>
+                                        <button type="submit" class="btn btn-sm btn-ks-primary">
+                                            <i class="bi bi-send me-1"></i> Reply
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        {% empty %}
+                            <div class="ks-card p-5 text-center text-muted">
+                                No contact messages received yet.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Keep active pill styling consistent with KisanSetu green
+    document.querySelectorAll('#adminTabs button').forEach(btn => {
+        btn.addEventListener('shown.bs.tab', () => {
+            document.querySelectorAll('#adminTabs button').forEach(b => {
+                b.classList.remove('bg-success', 'text-white');
+                b.classList.add('bg-white', 'text-dark', 'border');
+            });
+            btn.classList.remove('bg-white', 'text-dark', 'border');
+            btn.classList.add('bg-success', 'text-white');
+        });
+    });
+</script>
+{% endblock %}

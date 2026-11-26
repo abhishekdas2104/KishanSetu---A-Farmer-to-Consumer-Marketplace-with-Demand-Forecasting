@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Dashboard – KisanSetu{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            {% include 'includes/dashboard_sidebar.html' %}
+        </div>
+
+        <div class="col-lg-9">
+            <!-- Header & Quick Actions -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <span class="ks-badge-green mb-1 d-inline-block">Farmer Dashboard</span>
+                    <h2 class="fw-bold mb-0">Namaste, {{ user.profile.full_name }}!</h2>
+                    <p class="text-muted small mb-0">Monitor your products, incoming orders, and 7-day demand insights.</p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'add_product' %}" class="btn btn-ks-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Add New Product
+                    </a>
+                    <a href="{% url 'farmer_orders' %}" class="btn btn-ks-secondary btn-sm">
+                        <i class="bi bi-receipt me-1"></i> View Orders
+                    </a>
+                    <a href="{% url 'forecasting' %}" class="btn btn-ks-outline btn-sm">
+                        <i class="bi bi-graph-up-arrow me-1"></i> Demand Forecasting
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4 Statistics Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Total Products</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1">{{ total_products }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Active Products</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1 text-success">{{ active_products }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card">
+                        <div class="small text-muted fw-semibold">Total Orders</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1">{{ total_orders }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="ks-stat-card ks-stat-card-highlight">
+                        <div class="small text-muted fw-semibold">Total Earnings</div>
+                        <div class="fs-2 fw-bold tabular-nums mt-1" style="color: #8A5A00;">₹{{ total_earnings }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Stock Alerts -->
+            {% if low_stock_products %}
+                <div class="alert alert-warning border rounded-3 mb-4">
+                    <div class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>Low Stock Alert (5 kg or less)</div>
+                    <ul class="mb-0 small">
+                        {% for p in low_stock_products %}
+                            <li>
+                                <strong>{{ p.name }}</strong>: only <strong>{{ p.available_quantity }} kg</strong> remaining.
+                                <a href="{% url 'edit_product' p.pk %}" class="text-decoration-none fw-semibold">Update stock</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="row g-4">
+                <!-- Recent Orders -->
+                <div class="col-lg-8">
+                    <div class="ks-card overflow-hidden">
+                        <div class="p-3 d-flex justify-content-between align-items-center border-bottom" style="border-color: var(--ks-border) !important;">
+                            <h5 class="fw-bold mb-0">Recent Orders</h5>
+                            <a href="{% url 'farmer_orders' %}" class="small text-success text-decoration-none fw-semibold">View All &rarr;</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table ks-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Products &amp; Qty</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                        <tr>
+                                            <td class="fw-semibold tabular-nums">
+                                                <a href="{% url 'order_detail' order.pk %}" class="text-success text-decoration-none">#{{ order.id }}</a>
+                                            </td>
+                                            <td>{{ order.customer.profile.full_name|default:order.customer.username }}</td>
+                                            <td class="small">
+                                                {% for item in order.items.all %}
+                                                    <div>{{ item.product.name }} ({{ item.quantity }} kg)</div>
+                                                {% endfor %}
+                                            </td>
+                                            <td class="small text-muted">{{ order.order_date|date:"d M Y" }}</td>
+                                            <td>
+                                                {% if order.status == 'Pending' %}
+                                                    <span class="ks-badge-yellow">Pending</span>
+                                                {% elif order.status == 'Accepted' %}
+                                                    <span class="ks-badge-green">Accepted</span>
+                                                {% elif order.status == 'Completed' %}
+                                                    <span class="ks-badge-green">Completed</span>
+                                                {% else %}
+                                                    <span class="ks-badge-red">Rejected</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">No orders received yet.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Demand Highlights -->
+                <div class="col-lg-4">
+                    <div class="ks-card p-3 h-100" style="background-color: var(--ks-accent-soft);">
+                        <span class="ks-badge-yellow mb-2 d-inline-block">7-Day Demand Estimate</span>
+                        <h5 class="fw-bold mb-2">Top Demanded Produce</h5>
+                        {% if most_demanded %}
+                            <div class="d-flex flex-column gap-2 mb-3">
+                                {% for f in most_demanded %}
+                                    <div class="bg-white p-2 rounded-3 border" style="border-color: var(--ks-border) !important;">
+                                        <div class="fw-semibold small">{{ f.product.name }}</div>
+                                        <div class="small text-muted tabular-nums">
+                                            Est. Weekly: <strong>{{ f.predicted_weekly_demand }} kg</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="small text-muted mb-3">
+                                Not enough order history in the last 7 days yet. Once customers place orders, demand estimates will appear here.
+                            </p>
+                        {% endif %}
+                        <a href="{% url 'forecasting' %}" class="btn btn-ks-primary btn-sm w-100">
+                            Open Demand Forecasting
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
